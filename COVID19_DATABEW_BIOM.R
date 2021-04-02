@@ -5,7 +5,7 @@
 ### Doel: data uit verschillende bronnen inlezen en koppelen, naar LONG
 ###
 ### Start: 31/03/2021
-### Laatste aanpassing: 31/03/2021
+### Laatste aanpassing: 02/04/2021
 ###
 ### sessionInfo()
 ###
@@ -33,30 +33,30 @@ library(foreign)
 library(reshape2)
 library(data.table)
 
-# Functie om uit SPSS geimporteerde datum variabelen te transformeren
+## Functie om uit SPSS geimporteerde datum variabelen te transformeren
 spss2date <- function(x) as.Date(x/86400, origin = "1582-10-14")
 
-# Verwijzen naar map waarin data staan, en data uit SPSS-bestand inlezen
+## Verwijzen naar map waarin data staan, en data uit SPSS-bestand inlezen
 setwd("C:/Users/sande/Documents/Werk/MaastrICCht/DATA/PROJECT ECG")
 d <- read.spss("COVID_19MUMC_CARDIAC BIOMARKERS_BROAD_1.sav", to.data.frame = TRUE)
 
-# Inspectie data: unieke patientnummers
+## Inspectie data: unieke patientnummers
 length(d$RecordId)
 length(unique(d$RecordId))
 
-# Datum variabelen transformeren
+## Datum variabelen transformeren
 d[, grep("ReportCreationDate.", names(d), value = TRUE)]  <-
     lapply(d[, grep("ReportCreationDate.", names(d), value = TRUE)],
     FUN = function (x) as.Date(substr(x, 1, 10), format = c("%d-%m-%Y")))
 
-# Verwijderen redundante variabelen
+## Verwijderen redundante variabelen
 drops <- c("V10", grep("Echtedatum.", names(d), value = TRUE),
            grep("ReportNameCustom.", names(d), value = TRUE),
            grep("ReportParent.", names(d), value = TRUE))
 d <- d[, !names(d) %in% drops]
 rm(drops, spss2date)
 
-# Data van wide naar long
+## Data van wide naar long
 d_long <- melt(setDT(d), id.vars = "RecordId",
                measure.vars = list(grep("ReportCreationDate.",  names(d), value = TRUE),
                                    grep("CK_daily.", names(d), value = TRUE),
@@ -69,7 +69,7 @@ d <- data.frame(d)
 d_long <- data.frame(d_long)
 names(d_long)[2] <- "meetmoment"
 
-# Eerste datum per patient, om relatieve tijd te berekenen
+## Eerste datum per patient, om relatieve tijd te berekenen
 first <- data.frame(d$RecordId, d$ReportCreationDate.1)
 names(first) <- c("RecordId", "Day1")
 d_long <- merge(d_long, first, by = "RecordId")
@@ -77,7 +77,7 @@ d_long$meetdag <- as.numeric(difftime(d_long$Date, d_long$Day1, units = "days"))
 d_long <- subset(d_long, !is.na(d_long$Date))
 rm(first)
 
-# Koppelen met SOFA data voor ajustment variabelen
+## Koppelen met SOFA data voor ajustment variabelen
 setwd("C:/Users/sande/Documents/Werk/MaastrICCht/DATA")
 
 t <- read.csv("COVID19_ICU_250620_SOFA.csv", sep = ",")
@@ -96,7 +96,28 @@ t <- t[, names(t) %in% keep]
 d_long <- merge(d_long, t, by = "RecordId")
 rm(t, keep)
 
-# Data opslaan om te modelleren
+## Dagelijkse creatinine concentratie toevoegen voor hsTnT analyses
+t <- read.csv("COVID19_ICU_250620_SOFA.csv", sep = ",")
+names(t)[1] <- "RecordId"
+
+t$Date <- as.Date(t$date, format = "%d-%m-%Y")
+
+keep <- c("RecordId", "Date", "creatinine", "dialysis")
+t <- t[, names(t) %in% keep]
+
+t$dialysis[t$dialysis == ""] <- NA
+t$dialysis[t$dialysis == "##USER_MISSING_97##"] <- NA
+
+## Ik neem de eerste meting van de dag in geval van 2 metingen
+t <- t[!(duplicated(t[c("RecordId","Date")]) | duplicated(t[c("RecordId","Date")])), ]
+
+d_long <- merge(d_long, t, by = c("RecordId", "Date"), all.x = TRUE,  all.y = FALSE)
+## data.frame(d_long$RecordId, d_long$dialysis.x, d_long$dialysis.y) # .y is dagelijks
+names(d_long)[20:21] <- c("dialysis", "dialysis_d")
+
+rm(t, keep)
+
+## Data opslaan om te modelleren
 setwd("c:/Users/sande/Documents/Werk/MaastrICCht/DATA/PROJECT ECG")
 save(d_long, file = "biomarkerdata.Rda")
 

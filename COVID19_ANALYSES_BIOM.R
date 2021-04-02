@@ -5,7 +5,7 @@
 ### Doel: associaties Biomarkers IC-mortaliteit op ECG-cohort
 ###
 ### Start: 31/03/2021
-### Laatste aanpassing: 01/04/2021
+### Laatste aanpassing: 02/04/2021
 ###
 ### Model 1 Crude
 ### Model 2 Sex, age
@@ -224,7 +224,8 @@ summary(hstnta2)
 round(intervals(hstnta2, which = "fixed")$fixed, 2)
 
 hstnta3 <- lme(loghstnt ~ ICU_mortality*meetmoment +
-               gender + age + APACHE_II + creatinine_admission, data = d_long,
+               gender + age + APACHE_II + creatinine_admission +
+               creatinine + dialysis_d, data = d_long,
                random = ~1 + meetmoment | RecordId,
                correlation = corCAR1(form = ~ meetmoment | RecordId),
                na.action = na.omit, method = "ML",
@@ -235,6 +236,7 @@ round(intervals(hstnta3, which = "fixed")$fixed, 2)
 
 hstnta4 <- lme(loghstnt ~ ICU_mortality*meetmoment +
                gender + age + APACHE_II + creatinine_admission +
+               creatinine + dialysis_d +
                cvrm.Hypertension + cvrm.Diabetes_Mellitus +
                cvrm.Smoking + cvrm.Obesity, data = d_long,
                random = ~1 + meetmoment | RecordId,
