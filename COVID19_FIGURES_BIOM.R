@@ -60,7 +60,7 @@ plot(jitter(d_long$meetdag[d_long$ICU_mortality == "Death"], 0.8),
      jitter(d_long$logCK[d_long$ICU_mortality == "Death"], 0.8),
      xlim = c(0, 5*7), ylim = c(0, max(d_long$logCK, na.rm = TRUE)),
      pch = 1, cex = 0.5, xlab = "Follow-up time (weeks)",
-     ylab = "CK (U/L)", col = "grey50", xaxt = "n")
+     ylab = "log-CK (U/L)", col = "grey50", xaxt = "n")
 points(jitter(d_long$meetdag[d_long$ICU_mortality == "Alive"], 0.5),
        jitter(d_long$logCK[d_long$ICU_mortality == "Alive"], 0.5), pch = 3,
        col = "grey50", cex = 0.5)
@@ -96,7 +96,7 @@ plot(jitter(d_long$meetdag[d_long$ICU_mortality == "Death"], 0.8),
      jitter(d_long$logCKmb[d_long$ICU_mortality == "Death"], 0.8),
      xlim = c(0, 5*7), ylim = c(0, max(d_long$logCKmb, na.rm = TRUE)),
      pch = 1, cex = 0.5, xlab = "Follow-up time (weeks)",
-     ylab = expression(paste("CKmg (", mu, "g/L)")), col = "grey50", xaxt = "n")
+     ylab = expression(paste("log-CKmg (", mu, "g/L)")), col = "grey50", xaxt = "n")
 points(jitter(d_long$meetdag[d_long$ICU_mortality == "Alive"], 0.5),
        jitter(d_long$logCKmb[d_long$ICU_mortality == "Alive"], 0.5), pch = 3,
        col = "grey50", cex = 0.5)
@@ -132,7 +132,7 @@ plot(jitter(d_long$meetdag[d_long$ICU_mortality == "Death"], 0.8),
      jitter(d_long$loghstnt[d_long$ICU_mortality == "Death"], 0.8),
      xlim = c(0, 5*7), ylim = c(0, max(d_long$loghstnt, na.rm = TRUE)),
      pch = 1, cex = 0.5, xlab = "Follow-up time (weeks)",
-     ylab = "hsTnT (ng/L)", col = "grey50", xaxt = "n")
+     ylab = "log-hsTnT (ng/L)", col = "grey50", xaxt = "n")
 points(jitter(d_long$meetdag[d_long$ICU_mortality == "Alive"], 0.5),
        jitter(d_long$loghstnt[d_long$ICU_mortality == "Alive"], 0.5), pch = 3,
        col = "grey50", cex = 0.5)
@@ -168,7 +168,7 @@ plot(jitter(d_long$meetdag[d_long$ICU_mortality == "Death"], 0.8),
      jitter(d_long$logNTproBNT[d_long$ICU_mortality == "Death"], 0.8),
      xlim = c(0, 5*7), ylim = c(0, max(d_long$loghstnt, na.rm = TRUE)),
      pch = 1, cex = 0.5, xlab = "Follow-up time (weeks)",
-     ylab = "NT-proBNP (pg/mL)", col = "grey50", xaxt = "n")
+     ylab = "log-NT-proBNP (pg/mL)", col = "grey50", xaxt = "n")
 points(jitter(d_long$meetdag[d_long$ICU_mortality == "Alive"], 0.5),
        jitter(d_long$logNTproBNP[d_long$ICU_mortality == "Alive"], 0.5), pch = 3,
        col = "grey50", cex = 0.5)
