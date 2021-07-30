@@ -5,7 +5,7 @@
 ### Doel: figuren associaties mortaliteit-biomarkers
 ###
 ### Start: 01/04/2021
-### Laatste aanpassing: 01/04/2021
+### Laatste aanpassing: 30/07/2021
 ###
 ### Model 1 Crude
 ### Model 2 Sex, age
@@ -96,7 +96,7 @@ plot(jitter(d_long$meetdag[d_long$ICU_mortality == "Death"], 0.8),
      jitter(d_long$logCKmb[d_long$ICU_mortality == "Death"], 0.8),
      xlim = c(0, 5*7), ylim = c(0, max(d_long$logCKmb, na.rm = TRUE)),
      pch = 1, cex = 0.5, xlab = "Follow-up time (weeks)",
-     ylab = expression(paste("log-CKmg (", mu, "g/L)")), col = "grey50", xaxt = "n")
+     ylab = expression(paste("log-CKmb (", mu, "g/L)")), col = "grey50", xaxt = "n")
 points(jitter(d_long$meetdag[d_long$ICU_mortality == "Alive"], 0.5),
        jitter(d_long$logCKmb[d_long$ICU_mortality == "Alive"], 0.5), pch = 3,
        col = "grey50", cex = 0.5)
